@@ -30,7 +30,7 @@ class RegisterController
             $input['email'] = $email;
             $input['status'] = 0;
             $input['link_start'] = Carbon::now();
-            $input['link_expire'] = Carbon::now()->addMinutes(1);
+            $input['link_expire'] = Carbon::now()->addMinutes(3);
 
             $input['password'] = bcrypt($password);
             $user = User::create($input);
@@ -70,7 +70,7 @@ class RegisterController
         if($current_time > $user->link_expire)
         {
             $link_start = Carbon::now();
-            $link_expire = Carbon::now()->addMinutes(1);
+            $link_expire = Carbon::now()->addMinutes(3);
             
             $update = User::where('id', $id)
                     ->update(['link_start'=> $link_start,'link_expire'=> $link_expire]);
