@@ -109,7 +109,7 @@ class RegisterController
 
                 } catch (\Illuminate\Database\QueryException $e) {
                     
-                    return "Error in updating Email";
+                    return "Email already exists.";
                 }
             }
         }
