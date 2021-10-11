@@ -22,8 +22,6 @@ class RegisterController
             ->where('email', $email)
             // ->where('status', 1)            
             ->first();
-
-           // dd($user);
         if(empty($user)){
             $password = "123456789";
             $input['name'] = $email;
