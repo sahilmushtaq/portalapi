@@ -95,7 +95,7 @@ class RegisterController
             $token = "Bearer " . $user_auth->createToken('MyApp')->accessToken;
             $update = User::where('id', $id)
                     ->update(['status'=> 1]);
-            return Redirect::to("http://localhost/portal/home.php?id=$encrptId&token=$token");
+            return Redirect::to("http://localhost/portal-master/home.php?id=$encrptId&token=$token");
         }
         
     }
