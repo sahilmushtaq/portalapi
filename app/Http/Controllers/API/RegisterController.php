@@ -19,44 +19,35 @@ class RegisterController
     {
         $email = $request->email;
         $user = DB::table('users')
-            ->where('email', $email)
-            // ->where('status', 1)            
+            ->where('email', $email)          
             ->first();
-        if(empty($user)){
-            $password = "123456789";
-            $input['name'] = $email;
-            $input['email'] = $email;
-            $input['status'] = 0;
-            $input['link_start'] = Carbon::now();
-            $input['link_expire'] = Carbon::now()->addMinutes(3);
-
-            $input['password'] = bcrypt($password);
-            $user = User::create($input);
-            $encrptId = Crypt::encryptString($user->id);
-            $link = "http://127.0.0.1:8000/api/check/".$encrptId;
-            $details = [
-                'title' => 'Mail from Abacus Global',
-                'body' => $link
-            ];            
-
-            \Mail::to($email)->send(new \App\Mail\PortalMail($details));
-            $result['msg'] = 'Email';
-            return $result;
-        }else if($user->status == 0){
-            // check your email
+        
+        if(!empty($user) && $user->status == 0){
             $result['msg'] = 'Already Exists';
             return $result;
         }
-        else{
-            // move to home screen
-            $user_auth = Auth::loginUsingId($user->id, true);
-            $token = "Bearer " . $user_auth->createToken('MyApp')->accessToken;            
-            $encrptId = Crypt::encryptString($user->id);
-            $result['token'] = $token;
-            $result['id'] = $encrptId;
-            $result['msg'] = "ok";
-            return $result;
-        } 
+
+        $password = "123456789";
+        $input['name'] = $email;
+        $input['email'] = $email;
+        $input['status'] = 0;
+        $input['link_start'] = Carbon::now();
+        $input['link_expire'] = Carbon::now()->addMinutes(3);
+        $input['password'] = bcrypt($password);
+        if(empty($user)){
+            $user = User::create($input);
+        }
+        $encrptId = Crypt::encryptString($user->id);
+        $link = "http://127.0.0.1:8000/api/check/".$encrptId;
+        $details = [
+            'title' => 'Mail from Abacus Global',
+            'body' => $link
+        ];            
+
+        \Mail::to($email)->send(new \App\Mail\PortalMail($details));
+        $result['msg'] = 'Email';
+        return $result;
+
     }
 
     public function check($encrptId)
